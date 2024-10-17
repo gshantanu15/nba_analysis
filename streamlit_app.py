@@ -29,7 +29,7 @@ if selected_player:
     
     # Display player image in the first column
     with col1:
-        image_url = f"https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png"
+        image_url = f"https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png?imwidth=1040&imheight=760"
         st.image(image_url, caption=selected_player, width=200)
     
     # Display stats and charts in the second column
