@@ -44,11 +44,23 @@ This will open a new tab in your default web browser with the Streamlit app.
 
 ## Project Structure
 
-- `app.py`: Dash application
-- `streamlit_app.py`: Streamlit application
+nba_analysis/
+|-- data/
+|   |-- fetch_data.py
+|   |-- process_data.py
+|-- visualization/
+|   |-- plot_data.py
+|-- app.py
+|-- streamlit_app.py
+|-- requirements.txt
+|-- README.md
+
 - `data/`: Module for data fetching and processing
 - `visualization/`: Module for data visualization
+- `app.py`: Dash application
+- `streamlit_app.py`: Streamlit application
 - `requirements.txt`: List of Python dependencies
+- `README.md`: This file, containing project overview and instructions
 
 ## License
 
