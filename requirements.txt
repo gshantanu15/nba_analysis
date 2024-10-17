@@ -1,0 +1,6 @@
+pandas
+matplotlib
+seaborn
+dash
+nba_api
+streamlit
