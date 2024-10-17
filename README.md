@@ -44,6 +44,7 @@ This will open a new tab in your default web browser with the Streamlit app.
 
 ## Project Structure
 
+```
 nba_analysis/
 |-- data/
 |   |-- fetch_data.py
@@ -54,6 +55,7 @@ nba_analysis/
 |-- streamlit_app.py
 |-- requirements.txt
 |-- README.md
+```
 
 - `data/`: Module for data fetching and processing
 - `visualization/`: Module for data visualization
