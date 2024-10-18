@@ -4,6 +4,19 @@ from data.fetch_data import fetch_player_data
 from data.process_data import calculate_average_points
 from visualization.plot_data import plot_average_points
 
+# Add custom CSS to make the content wider
+st.markdown("""
+<style>
+    .reportview-container .main .block-container {
+        max-width: 1200px;
+        padding-top: 2rem;
+        padding-right: 2rem;
+        padding-left: 2rem;
+        padding-bottom: 2rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.title('NBA Player Analysis')
 
 player_options = {
@@ -42,10 +55,10 @@ if selected_player:
         st.write(f"Highest Points per Season: {average_points.max():.2f}")
         st.write(f"Lowest Points per Season: {average_points.min():.2f}")
 
-    # Display charts below the image and stats
+    # Adjust the layout for charts
     st.subheader('Average Points per Season')
-    st.bar_chart(average_points)
+    st.bar_chart(average_points, use_container_width=True)
 
-    st.subheader('Detailed Visualization')
-    fig = plot_average_points(average_points)
-    st.pyplot(fig)
+    st.subheader('Alternative Visualization')
+    fig = plot_average_points(average_points, selected_player)
+    st.pyplot(fig, use_container_width=True)
