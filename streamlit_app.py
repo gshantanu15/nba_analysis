@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from data.fetch_data import fetch_player_data
+from data.fetch_data import fetch_player_data, load_image
 from data.process_data import calculate_average_points
 from visualization.plot_data import plot_average_points
 
@@ -43,7 +43,12 @@ if selected_player:
     # Display player image in the first column
     with col1:
         image_url = f"https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png?imwidth=1040&imheight=760"
-        st.image(image_url, caption=selected_player, width=200)
+        with st.spinner("Loading player image..."):
+            img = load_image(image_url)
+        if img is not None:
+            st.image(img, caption=selected_player, width=200)
+        else:
+            st.warning("Failed to load player image.")
     
     # Display stats and charts in the second column
     with col2:
