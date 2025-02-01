@@ -1,68 +1,124 @@
-# NBA Analysis
+# NBA Player Career Analysis Dashboard
 
-A simple Python app that demonstrates some fundamental data analysis practices for NBA player statistics. This project is a work-in-progress, open to suggestions, and serves as a portfolio repository!
+A Python application for analyzing NBA players' career trajectories and predicting career longevity risks. This project combines statistical analysis with interactive visualizations to provide insights into player performance and career sustainability.
 
 ## Features
 
-- Fetch NBA player data using the `nba_api`
-- Process and analyze player statistics (currently only Points per Season)
-- Visualize player performance using Matplotlib and Seaborn (Limited players)
-- Interactive web applications using Dash and Streamlit (Streamlit preferred for easier and nicer look)
+### Player Analysis
+- **Career Statistics Visualization**
+  - Points per season analysis
+  - Career trajectory tracking
+  - Performance metrics over time
+  - Interactive data visualization
+
+### Career Longevity Analysis
+- **Risk Assessment**
+  - Career risk score calculation
+  - Performance decline analysis
+  - Usage pattern tracking
+  - Injury risk evaluation
+
+### Interactive Dashboard
+- **Player Selection**
+  - Comprehensive player database
+  - Search by player name
+  - Team and career span information
+  - Player head-shots integration
+
+- **Visual Analytics**
+  - Career performance trajectory
+  - Risk factor radar charts
+  - Efficiency trend analysis
+  - Playing time patterns
+
+## Technical Implementation
+
+### Data Processing
+- **Advanced Metrics**
+  - Rolling averages with weighted windows
+  - Magnitude-sensitive decline indicators
+  - Cumulative decline tracking
+  - Performance efficiency ratings
+
+- **Risk Calculation**
+  - Multi-factor risk assessment
+  - Age-adjusted analysis
+  - Performance trend evaluation
+  - Injury history consideration
+
+### Visualization Components
+- **Interactive Charts**
+  - Plotly for dynamic visualizations
+  - Streamlit for web interface
+  - Real-time data updates
+  - Responsive design
 
 ## Installation
 
 1. Clone the repository:
-   ```
-   git clone https://github.com/gshantanu15/nba_analysis.git
-   cd nba_analysis
-   ```
+```bash
+git clone https://github.com/gshantanu15/nba_analysis.git
+cd nba_analysis
+```
 
-2. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+2. Create and activate a virtual environment (recommended):
+```bash
+python -m venv nba_env
+source nba_env/bin/activate  # On Windows: nba_env\Scripts\activate
+```
+
+3. Install required packages:
+```bash
+pip install -r requirements.txt
+```
 
 ## Usage
 
-### Dash Application
-I do not recommend using Dash in this project as I have not configured it yet, or explored enough. Streamlit is recommended! ´:D´
-
-### Streamlit Application
-
-To run the Streamlit application:
-
-```
+Launch the Streamlit dashboard:
+```bash
 streamlit run streamlit_app.py
 ```
 
-This will open a new tab in your default web browser with the Streamlit app.
-
-## Initial Commit
-- .gitignore : Using GitHub's template for a python project
-- LICENSE : Using MIT License intially, as it seemed easiest. May change later, if needed.
-- README.md : Markdown file! (What you're reading rn :D)
+The application will open in your default web browser, featuring:
+- Player selection dropdown with team information
+- Career statistics visualization
+- Longevity risk analysis
+- Performance insights
 
 ## Project Structure
 
 ```
 nba_analysis/
-|-- data/
-|   |-- fetch_data.py
-|   |-- process_data.py
-|-- visualization/
-|   |-- plot_data.py
-|-- app.py
-|-- streamlit_app.py
-|-- requirements.txt
-|-- README.md
+├── data/
+│   ├── fetch_data.py      # NBA API integration
+│   └── process_data.py    # Data processing and analysis
+├── visualization/
+│   └── plot_data.py       # Visualization functions
+├── streamlit_app.py       # Main application
+└── requirements.txt       # Dependencies
 ```
 
-- `data/`: Module for data fetching and processing
-- `visualization/`: Module for data visualization
-- `app.py`: Dash application
-- `streamlit_app.py`: Streamlit application
-- `requirements.txt`: List of Python dependencies
-- `README.md`: This file, containing project overview and instructions
+### Key Components
+
+#### Data Module
+- `fetch_data.py`: Handles NBA API integration and data retrieval
+- `process_data.py`: Implements advanced statistical analysis and risk calculations
+
+#### Visualization Module
+- `plot_data.py`: Creates interactive charts and visualizations
+- Utilizes Plotly for dynamic data representation
+
+#### Main Application
+- `streamlit_app.py`: Integrates all components into an interactive dashboard
+
+## Dependencies
+
+- `streamlit`: Web application framework
+- `pandas`: Data manipulation and analysis
+- `numpy`: Numerical computations
+- `plotly`: Interactive visualizations
+- `nba_api`: NBA statistics and data
+- `Pillow`: Image processing
 
 ## License
 
@@ -70,6 +126,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- NBA API for providing access to NBA statistics and headshots of players
-- Dash and Streamlit for enabling interactive web applications
-- Pandas, Matplotlib, and Seaborn for data processing and visualization
+- NBA API for providing comprehensive basketball statistics
+- Streamlit team for the excellent web framework
+- Contributors and users of this project

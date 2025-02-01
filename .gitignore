@@ -130,6 +130,10 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+nba_env/
+
+# Project settings
+.cursorignore
 
 # Spyder project settings
 .spyderproject
