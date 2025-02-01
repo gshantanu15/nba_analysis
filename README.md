@@ -2,6 +2,10 @@
 
 A Python application for analyzing NBA players' career trajectories and predicting career longevity risks. This project combines statistical analysis with interactive visualizations to provide insights into player performance and career sustainability.
 
+## Working Demo
+[https://nba-analysis.streamlit.app/](https://nba-analysis.streamlit.app/)
+
+
 ## Features
 
 ### Player Analysis
