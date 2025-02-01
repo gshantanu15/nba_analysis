@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
-from data.fetch_data import fetch_player_data, load_image
-from data.process_data import calculate_average_points
-from visualization.plot_data import plot_average_points
+from data.fetch_data import fetch_player_data, fetch_longevity_data, load_image, fetch_all_players
+from data.process_data import calculate_average_points, process_longevity_features, calculate_career_risk_score
+from visualization.plot_data import plot_average_points, plot_longevity_analysis, plot_risk_score_gauge
 
 # Add custom CSS to make the content wider
 st.markdown("""
@@ -17,53 +17,126 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title('NBA Player Analysis')
+st.title('NBA Player Analysis Dashboard')
 
-player_options = {
-    'LeBron James': '2544',
-    'Stephen Curry': '201939',
-    'Kevin Durant': '201142',
-    'Giannis Antetokounmpo': '203507',
-    'Klay Thompson': '202691',
-    'Anthony Davis': '203076',
-    'Russell Westbrook': '201566',
-    'James Harden': '201935',
-    'Chris Paul': '101108',
-    'DeMar DeRozan': '201942'
-}
+# Sidebar for player selection
+st.sidebar.title('Player Selection')
 
-selected_player = st.selectbox('Select a player', list(player_options.keys()))
+# Fetch list of all players
+players_df = fetch_all_players()
 
-if selected_player:
-    player_id = player_options[selected_player]
+if not players_df.empty:
+    # Create player selection dropdown with additional info
+    players_df['DISPLAY_NAME'] = players_df.apply(
+        lambda x: f"{x['PLAYER_NAME']} ({x['TEAM_ABBREVIATION']} {x['FROM_YEAR']}-{x['TO_YEAR']})", 
+        axis=1
+    )
     
-    # Create two columns for layout
-    col1, col2 = st.columns([1, 2])
+    # Default to Karl-Anthony Towns
+    default_idx = players_df[players_df['PLAYER_ID'] == '203999'].index[0] if '203999' in players_df['PLAYER_ID'].values else 0
     
-    # Display player image in the first column
-    with col1:
-        image_url = f"https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png?imwidth=1040&imheight=760"
-        with st.spinner("Loading player image..."):
-            img = load_image(image_url)
-        if img is not None:
-            st.image(img, caption=selected_player, width=200)
-        else:
-            st.warning("Failed to load player image.")
+    selected_player = st.sidebar.selectbox(
+        'Select Player',
+        options=players_df['DISPLAY_NAME'].tolist(),
+        index=default_idx
+    )
     
-    # Display stats and charts in the second column
-    with col2:
-        player_career_df = fetch_player_data(player_id)
-        average_points = calculate_average_points(player_career_df)
+    # Extract player ID from selection
+    selected_name = selected_player.split(' (')[0]  # Remove team and years info
+    player_id = players_df[players_df['PLAYER_NAME'] == selected_name]['PLAYER_ID'].iloc[0]
+    
+    # Main content
+    if player_id:
+        # Fetch player data
+        player_data = fetch_player_data(player_id)
         
-        st.subheader('Career Stats')
-        st.write(f"Average Points: {average_points.mean():.2f}")
-        st.write(f"Highest Points per Season: {average_points.max():.2f}")
-        st.write(f"Lowest Points per Season: {average_points.min():.2f}")
-
-    # Adjust the layout for charts
-    st.subheader('Average Points per Season')
-    st.bar_chart(average_points, use_container_width=True)
-
-    st.subheader('Alternative Visualization')
-    fig = plot_average_points(average_points, selected_player)
-    st.pyplot(fig, use_container_width=True)
+        # Basic stats section
+        st.header('Basic Career Statistics')
+        
+        # Create columns for image and stats
+        col1, col2 = st.columns([1, 3])
+        
+        with col1:
+            # Display player image
+            image_url = f"https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png"
+            with st.spinner("Loading player image..."):
+                img = load_image(image_url)
+            if img is not None:
+                st.image(img, caption=selected_name, width=200)
+            else:
+                st.warning("Failed to load player image.")
+        
+        with col2:
+            avg_points = calculate_average_points(player_data)
+            st.plotly_chart(plot_average_points(avg_points, selected_name))
+        
+        # Career Longevity Analysis section
+        st.header('Career Longevity Analysis')
+        
+        with st.spinner('Analyzing career longevity...'):
+            # Fetch comprehensive data for longevity analysis
+            longevity_data = fetch_longevity_data(player_id)
+            
+            # Process features for longevity prediction
+            processed_data = process_longevity_features(longevity_data)
+            
+            # Calculate risk score
+            risk_score = calculate_career_risk_score(processed_data)
+            
+            # Display risk score gauge
+            st.subheader('Career Risk Assessment')
+            st.plotly_chart(plot_risk_score_gauge(risk_score))
+            
+            # Display detailed analysis
+            figures = plot_longevity_analysis(processed_data)
+            
+            # Career trajectory
+            st.subheader('Career Performance Trajectory')
+            st.plotly_chart(figures['trajectory'])
+            
+            # Risk factors analysis
+            col1, col2 = st.columns(2)
+            with col1:
+                st.subheader('Risk Factors Breakdown')
+                st.plotly_chart(figures['risk_radar'])
+            
+            with col2:
+                st.subheader('Efficiency Trend')
+                st.plotly_chart(figures['efficiency'])
+            
+            # Usage analysis
+            st.subheader('Playing Time Trend')
+            st.plotly_chart(figures['usage'])
+            
+            # Key insights
+            st.subheader('Key Insights')
+            
+            # Calculate some basic insights
+            recent_per = processed_data['PLAYER_EFFICIENCY_RATING'].iloc[-1]
+            career_avg_per = processed_data['PLAYER_EFFICIENCY_RATING'].mean()
+            recent_mins = processed_data['MIN_PER_GAME'].iloc[-1]
+            career_avg_mins = processed_data['MIN_PER_GAME'].mean()
+            
+            insights = []
+            
+            if recent_per < career_avg_per:
+                insights.append("⚠️ Recent efficiency is below career average")
+            else:
+                insights.append("✅ Maintaining efficiency above career average")
+                
+            if recent_mins < career_avg_mins * 0.8:
+                insights.append("⚠️ Significant decrease in playing time")
+            elif recent_mins > career_avg_mins * 1.1:
+                insights.append("📈 Increased role in team rotation")
+            
+            if risk_score > 70:
+                insights.append("🚨 High risk of career decline")
+            elif risk_score > 40:
+                insights.append("⚠️ Moderate risk of career decline")
+            else:
+                insights.append("✅ Low risk of career decline")
+            
+            for insight in insights:
+                st.markdown(f"- {insight}")
+else:
+    st.error('Unable to load player list. Please try again later.')
